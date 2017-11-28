@@ -41,6 +41,7 @@ public class Tweet extends HttpServlet {
 		Entity e;
     	DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 		String me = request.getParameter("message");
+		String aut = request.getParameter("author");
 		Query q = new Query("Tweet"); 
 		boolean isPresent = false;
         PreparedQuery pq = ds.prepare(q); 
@@ -66,7 +67,7 @@ public class Tweet extends HttpServlet {
        }
         }
        if(isPresent == false) {
-    	   response.sendRedirect(request.getContextPath()+"/datastore?message="+me);
+    	   response.sendRedirect(request.getContextPath()+"/datastore?message="+me+"&author="+aut);
    		
        		}else {
        			
