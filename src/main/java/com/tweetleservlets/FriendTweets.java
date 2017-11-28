@@ -36,7 +36,7 @@ public class FriendTweets extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-		Query q = new Query("Tweet"); 
+		Query q = new Query("Tweet").addSort("visited",Query.SortDirection.DESCENDING); 
 		String author = request.getParameter("author");
 	System.out.println("from friendtweets"+author);
 		        PreparedQuery pq = ds.prepare(q); 
@@ -52,6 +52,8 @@ public class FriendTweets extends HttpServlet {
 		       arr.add(tweet);
 		       String aut = (String) result.getProperty("author");  
 		       arr.add(aut);
+		       Long visit = (Long) result.getProperty("visited");  
+		       arr.add(visit.toString());
 		    	}
 		    }
 		       //String lastName = (String) result.getProperty("lastName");   
