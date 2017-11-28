@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+   <meta charset='utf-8'>
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="styles.css">
+   <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+   
+   <title>Tweetle</title>
+</head>
+<body>
+
+<div id='cssmenu'>
+<ul>
+   <li><a href='index.html'>Tweet</a></li>
+   <li ><a href='friends.html'>Friends</a></li>
+   <li class='active'><a href='toptweets.html'>Top Tweets</a></li>
+</ul>
+</div>
+<img id="image" src=""><h1 id="pname"></h1>
+<div class='login'>
+<button id="loginBtn">Facebook Login</button>
+</div>
+
+<div class='tweetlist'>
+<h1>All Tweets:</h1> <br>
+<p id="idlist">
+<table id="tweetstable" border="1" width="500">
+<tr>
+    <td width=30%>Date Created</td>
+    <td width=30%>Tweet</td>
+    <td width=30%>Author</td>
+    <td width=10%>Author</td>
+  </tr>
+  
+</table>
+</div>
+
+  	<script>
+  	var xmlReq = new XMLHttpRequest();
+  	
+  	function getTweets(name){
+  		
+  		xmlReq.open("GET","/getvisitedtweets?author="+name,true);
+  		xmlReq.send();
+  		xmlReq.onreadystatechange = processTweets;
+  	}
+  	function processTweets(){
+  		var text =" ";
+  		
+  		if(xmlReq.readyState == 4 && xmlReq.status == 200){
+  			 str=xmlReq.responseText;
+  			var val = str.split(",");
+  			 var x = document.getElementById("tweetstable");
+  			
+  			x.style.border="1px solid red";
+  			//document.getElementById("idlist").innerHTML = val;
+			   var row;
+			   var datecell,messcell;
+			   
+			   
+			   for (i = 0,j=1; i < val.length; i++,j++) {
+					  
+	 			    row=x.insertRow(j);
+	 			   var a = document.createElement('a');
+	 			  var linkText = document.createTextNode(val[i+1]);
+	 			  a.appendChild(linkText);
+	 			  a.title = val[i+1];
+	 			 var replaced = val[i+1].split(' ').join('+');
+	 			 var r = replaced.substr(1);
+	 			// var replaced = val[i+1].replace(' ', '+');
+	 			  a.href = "/Tweet?message="+r;
+	 			 // document.body.appendChild(a);
+	 			    row.insertCell(0).innerHTML = val[i];
+	 			    row.insertCell(1).appendChild(a);
+	 			   //row.insertCell(1).innerHTML = val[i+1];
+	 			  row.insertCell(2).innerHTML = val[i+2];
+	 			 row.insertCell(3).innerHTML = val[i+3];
+	 			  
+	 			   i+=3;
+				  }
+			   
+		
+  		}
+  	}
+function getUserData() {
+  		
+  		FB.api('/me/?fields=name,birthday,friends,picture.height(200).width(200)', function(response) {
+  			//document.getElementById('response').innerHTML = 'Hello ' + response.name + ' Your Birthday is ' + response.birthday;
+  			var v =response.birthday.split("/");
+  			var fr = [];
+  			var text = "";
+  			var age = new Date().getFullYear() - parseInt(v[2]);
+  			document.getElementById('pname').innerHTML='Hi ' + response.name;
+  			document.getElementById('image').src=response.picture.data.url;
+  			getTweets(response.name);
+  			
+  			//document.getElementById("list").innerHTML = text;
+  			
+  			//document.getElementById('displayHere').innerHTML = 'Age is' + age;
+  		});
+  		
+  	}
+ 
+  	window.fbAsyncInit = function() {
+  		//SDK loaded, initialize it
+  		FB.init({
+  			appId      : '503737863336163',
+  			xfbml      : true,
+  			version    : 'v2.2'
+  		});
+  	 
+  		//check user session and refresh it
+  		FB.getLoginStatus(function(response) {
+  			if (response.status === 'connected') {
+  				//user is authorized
+  				document.getElementById('loginBtn').style.display = 'none';
+	  				getUserData();
+  			} else {
+  				//user is not authorized
+  				
+  			}
+  		});
+  	};
+  	document.getElementById('loginBtn').addEventListener('click', function() {
+  		//do the login
+  		FB.login(function(response) {
+  			if (response.authResponse) {
+  				//user just authorized your app
+  				document.getElementById('loginBtn').style.display = 'none';
+  				getUserData();
+  			}
+  		}, {scope: 'email,public_profile,user_birthday,user_posts,publish_actions,user_friends', return_scopes: true});
+  	}, false);
+  	 
+  	//load the JavaScript SDK
+  	(function(d, s, id){
+  		var js, fjs = d.getElementsByTagName(s)[0];
+  		if (d.getElementById(id)) {return;}
+  		js = d.createElement(s); 
+  		js.id = id;
+  		js.src = "//connect.facebook.com/en_US/sdk.js";
+  		fjs.parentNode.insertBefore(js, fjs);
+  	}(document, 'script', 'facebook-jssdk'));
+  	 
+  	//add event listener to login button
+  	
+  	//post a message on wall
+  	
+  	
+</script>
+
+</body>
+</html>
