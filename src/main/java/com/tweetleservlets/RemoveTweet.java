@@ -42,8 +42,9 @@ public class RemoveTweet extends HttpServlet {
 		Query q = new Query("Tweet"); 
 		String message = request.getParameter("message");
 	System.out.println(message);
+	String m = message.substring(1);
 		        PreparedQuery pq = ds.prepare(q); 
-		        Key tweetKey = KeyFactory.createKey("Tweet", message);
+		        Key tweetKey = KeyFactory.createKey("Tweet", m);
 		        Entity e=null;
 				try {
 					e = ds.get(tweetKey);
@@ -58,10 +59,27 @@ public class RemoveTweet extends HttpServlet {
 		       //String lastName = (String) result.getProperty("lastName");   
 		       //Long height = (Long) result.getProperty("Name");   
 		       
-		
+		       
+				Query q2 = new Query("Tweet"); 
+				String author = request.getParameter("author");
+			System.out.println(author);
+				        PreparedQuery pq2 = ds.prepare(q2); 
+				        ArrayList<String> arr = new ArrayList<String>();
+				        
+				        
+				    for (Entity result : pq2.asIterable()) {   
+				    	if(author.equals(result.getProperty("author"))) {
+				    		
+				    	String date = (String) result.getProperty("DateCreated");
+				    	arr.add(date);
+				       String tweet = (String) result.getProperty("message");  
+				       arr.add(tweet);
+				    	}
+				    }
 		    
 		   //response.getWriter().println(arr.toString());
 		    //response.getWriter().write(arr.toString());
+				    response.getWriter().write(arr.toString());
 	}
 
 	/**

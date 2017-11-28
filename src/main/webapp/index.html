@@ -115,9 +115,10 @@
   		
   		var index = (message*2)-1;
   		var message = val[index];
-  		document.getElementById("idlist").innerHTML = message;
-  		xmlReq.open("GET","/removetweets?message="+message,true);
+  		//document.getElementById("idlist").innerHTML = message+username;
+  		xmlReq.open("GET","/removetweets?message="+message+"&author="+username,true);
   		xmlReq.send();
+  		xmlReq.onreadystatechange = processTweets;
   		
   	}var username;
   	function getUserData() {
